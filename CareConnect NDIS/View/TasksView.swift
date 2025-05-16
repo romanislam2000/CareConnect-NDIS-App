@@ -20,22 +20,44 @@ struct TasksView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                LinearGradient(gradient: Gradient(colors: [Color(red: 0.7, green: 0.74, blue: 1.0), Color(red: 0.85, green: 0.9, blue: 1.0)]), startPoint: .topLeading, endPoint: .bottomTrailing)
+                Color(red: 31/255, green: 48/255, blue: 94/255)
                     .ignoresSafeArea()
 
-                VStack {
-                    if viewModel.taskLogs.isEmpty {
-                        Spacer()
-                        ProgressView("Loading Task Logs...")
-                        Spacer()
-                    } else {
-                        List {
+                ScrollView {
+                    VStack(spacing: 12) {
+                        Text("📋 Task Logs")
+                            .font(.largeTitle.bold())
+                            .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding([.top, .horizontal])
+
+                        HStack {
+                            Image(systemName: "magnifyingglass")
+                                .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                            TextField("Search", text: $searchText)
+                                .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                                .placeholder(when: searchText.isEmpty) {
+                                    Text("Search")
+                                        .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255).opacity(0.6))
+                                }
+                        }
+                        .padding()
+                        .background(Color.white.opacity(0.1))
+                        .cornerRadius(12)
+                        .padding(.horizontal)
+
+                        if viewModel.taskLogs.isEmpty {
+                            ProgressView("Loading Task Logs...")
+                                .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                                .padding(.top, 50)
+                        } else {
                             ForEach(filteredLogs) { log in
-                                VStack(alignment: .leading, spacing: 8) {
+                                VStack(alignment: .leading, spacing: 6) {
                                     HStack {
                                         Text(log.clientName)
                                             .font(.headline)
-                                            .foregroundColor(.black)
+                                            .bold()
+                                            .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
                                         Spacer()
                                         Text(formattedDate(log.date))
                                             .font(.caption)
@@ -43,54 +65,58 @@ struct TasksView: View {
                                     }
 
                                     if !log.tasksCompleted.isEmpty {
-                                        Text("Tasks: \(log.tasksCompleted.joined(separator: ", "))")
+                                        let isPending = log.tasksCompleted.joined(separator: ", ").lowercased().contains("pending")
+                                        Text("\(isPending ? "🟩" : "✅") Tasks: \(log.tasksCompleted.joined(separator: ", "))")
                                             .font(.subheadline)
-                                            .padding(.top, 2)
+                                            .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
                                     }
 
                                     if !log.notes.isEmpty {
                                         Text("📝 \(log.notes)")
                                             .font(.footnote)
-                                            .foregroundColor(.black.opacity(0.8))
+                                            .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
                                     }
                                 }
                                 .padding()
-                                .background(Color.white)
+                                .background(Color(red: 31/255, green: 48/255, blue: 94/255))
                                 .cornerRadius(14)
-                                .shadow(color: Color.black.opacity(0.07), radius: 4, x: 0, y: 2)
+                                .shadow(color: Color.black.opacity(0.3), radius: 15, x: 10, y: 10)
+                                .shadow(color: Color.white.opacity(0.4), radius: 8, x: -5, y: -5)
+                                .padding(.horizontal)
                                 .onTapGesture {
                                     selectedLog = log
                                     showEditTaskForm = true
                                 }
                             }
                         }
-                        .listStyle(PlainListStyle())
-                        .searchable(text: $searchText)
                     }
+                    .padding(.bottom, 16)
                 }
-                .padding(.top, 5)
-                .navigationTitle("📋 Task Logs")
+
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {
                             showNewTaskForm = true
                         } label: {
                             Image(systemName: "plus.circle.fill")
-                                .font(.title2)
-                                .foregroundColor(.purple)
+                                .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
                         }
                     }
                 }
+
                 .sheet(isPresented: $showNewTaskForm) {
                     AddTaskLogView(viewModel: viewModel)
                 }
+
                 .sheet(isPresented: $showEditTaskForm) {
                     if let log = selectedLog {
                         EditTaskLogView(log: log) { updatedLog in
                             viewModel.updateLog(updatedLog)
+                            viewModel.fetchLogs()
                         }
                     }
                 }
+
                 .onAppear {
                     viewModel.fetchLogs()
                 }

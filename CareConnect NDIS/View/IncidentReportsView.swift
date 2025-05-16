@@ -5,64 +5,105 @@ struct IncidentReportsView: View {
     @State private var showNewReport = false
     @State private var showEditReport = false
     @State private var selectedReport: IncidentReports?
+    @State private var searchText = ""
+
+    var filteredReports: [IncidentReports] {
+        if searchText.isEmpty {
+            return viewModel.reports
+        } else {
+            return viewModel.reports.filter {
+                $0.clientName.lowercased().contains(searchText.lowercased()) ||
+                $0.incidentType.lowercased().contains(searchText.lowercased())
+            }
+        }
+    }
 
     var body: some View {
         NavigationView {
             ZStack {
-                LinearGradient(gradient: Gradient(colors: [Color.indigo.opacity(0.7), Color.blue.opacity(0.4)]), startPoint: .topLeading, endPoint: .bottomTrailing).ignoresSafeArea()
+                Color(red: 0/255, green: 49/255, blue: 83/255) // #003153
+                    .ignoresSafeArea()
 
-                VStack {
-                    if viewModel.reports.isEmpty {
-                        Spacer()
-                        ProgressView("Loading reports...")
-                            .foregroundColor(.white)
-                        Spacer()
-                    } else {
-                        List {
-                            ForEach(viewModel.reports) { report in
-                                VStack(alignment: .leading, spacing: 6) {
-                                    Text("🚨 \(report.incidentType)")
-                                        .font(.headline)
-                                        .foregroundColor(.red)
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 14) {
+                        Text("🚨 Incident Reports")
+                            .font(.largeTitle.bold())
+                            .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                            .padding(.top)
+                            .padding(.horizontal)
 
-                                    Text("Client: \(report.clientName)")
-                                        .font(.subheadline)
+                        HStack {
+                            Image(systemName: "magnifyingglass")
+                                .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                            TextField("Search", text: $searchText)
+                                .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                                .accentColor(.white)
+                        }
+                        .padding()
+                        .background(Color.white.opacity(0.1))
+                        .cornerRadius(12)
+                        .padding(.horizontal)
 
-                                    Text("🗓️ \(formattedDate(report.date)) by \(report.reportedBy)")
-                                        .font(.footnote)
-                                        .foregroundColor(.gray)
+                        if viewModel.reports.isEmpty {
+                            ProgressView("Loading reports...")
+                                .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                                .padding(.top, 60)
+                        } else {
+                            ForEach(filteredReports) { report in
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 6) {
+                                        Text("🚨 \(report.incidentType)")
+                                            .font(.headline)
+                                            .foregroundColor(.red)
 
-                                    Text("📝 \(report.description)")
-                                        .font(.body)
-                                        .padding(.top, 4)
+                                        Text("👤 Client: \(report.clientName)")
+                                            .font(.subheadline)
+                                            .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+
+                                        Text("📅 \(formattedDate(report.date)) by \(report.reportedBy)")
+                                            .font(.footnote)
+                                            .foregroundColor(.gray)
+
+                                        Text("📝 \(report.description)")
+                                            .font(.footnote)
+                                            .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                                            .padding(.top, 4)
+                                    }
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                                 }
                                 .padding()
-                                .background(Color.white)
-                                .cornerRadius(12)
-                                .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
+                                .background(Color(red: 0/255, green: 49/255, blue: 83/255))
+                                .cornerRadius(14)
+                                .shadow(color: Color.black.opacity(0.3), radius: 15, x: 8, y: 8)
+                                .shadow(color: Color.white.opacity(0.3), radius: 6, x: -6, y: -6)
+                                .padding(.horizontal)
                                 .onTapGesture {
                                     selectedReport = report
                                     showEditReport = true
                                 }
                             }
+
                         }
-                        .listStyle(InsetGroupedListStyle())
                     }
+                    .padding(.bottom, 16)
                 }
-                .navigationTitle("🚨 Incident Reports")
+
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {
                             showNewReport = true
                         } label: {
                             Image(systemName: "plus.circle.fill")
-                                .foregroundColor(.white)
+                                .font(.title2)
+                                .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255)) // #f8ecc7
                         }
                     }
                 }
+
                 .sheet(isPresented: $showNewReport) {
                     AddIncidentReportView(viewModel: viewModel)
                 }
+
                 .sheet(isPresented: $showEditReport) {
                     if let report = selectedReport {
                         EditIncidentReportView(report: report) { updated in
@@ -70,10 +111,10 @@ struct IncidentReportsView: View {
                         }
                     }
                 }
+
                 .onAppear {
                     viewModel.fetchReports()
                 }
-                .padding()
             }
         }
     }

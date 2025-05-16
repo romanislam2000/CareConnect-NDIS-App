@@ -9,9 +9,7 @@ struct AdminView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                LinearGradient(gradient: Gradient(colors: [Color.indigo.opacity(0.7), Color.blue.opacity(0.4)]),
-                               startPoint: .topLeading,
-                               endPoint: .bottomTrailing)
+                Color(hex: "355E3B") // #008080
                     .ignoresSafeArea()
 
                 ScrollView {
@@ -19,14 +17,14 @@ struct AdminView: View {
 
                         Text("📁 Shared Documents")
                             .font(.title2.bold())
-                            .foregroundColor(.white)
+                            .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
 
                         ForEach(viewModel.documents) { doc in
                             if let url = URL(string: doc.link) {
                                 Link(doc.name, destination: url)
                                     .padding(.vertical, 4)
                                     .lineLimit(1)
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
                                     .underline()
                             }
                         }
@@ -35,7 +33,7 @@ struct AdminView: View {
 
                         Text("Upload Document")
                             .font(.headline)
-                            .foregroundColor(.white)
+                            .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
 
                         GroupBox {
                             TextField("Document Name", text: $docName)

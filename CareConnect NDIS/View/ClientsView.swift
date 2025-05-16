@@ -19,73 +19,91 @@ struct ClientsView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                LinearGradient(gradient: Gradient(colors: [Color.indigo.opacity(0.7), Color.blue.opacity(0.4)]),
-                               startPoint: .topLeading,
-                               endPoint: .bottomTrailing)
+                Color(hex: "04953")
                     .ignoresSafeArea()
 
-                VStack {
-                    if viewModel.clients.isEmpty {
-                        Spacer()
-                        ProgressView("Loading clients...")
-                            .foregroundColor(.white)
-                        Spacer()
-                    } else {
-                        List {
+                ScrollView {
+                    VStack(spacing: 12) {
+                        Text("👥 Clients")
+                            .font(.largeTitle.bold())
+                            .foregroundColor(Color(hex: "#f8ecc7"))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding([.top, .horizontal])
+
+                        HStack {
+                            Image(systemName: "magnifyingglass")
+                                .foregroundColor(Color(hex: "#f8ecc7"))
+                            TextField("Search", text: $searchText)
+                                .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                                .placeholder(when: searchText.isEmpty) {
+                                    Text("Search")
+                                        .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255).opacity(0.6))
+                                }
+                        }
+                        .padding()
+                        .background(Color.white.opacity(0.1))
+                        .cornerRadius(12)
+                        .padding(.horizontal)
+
+                        if viewModel.clients.isEmpty {
+                            Spacer()
+                            ProgressView("Loading clients...")
+                                .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                                .padding(.top, 50)
+                            Spacer()
+                        } else {
                             ForEach(filteredClients) { client in
                                 VStack(alignment: .leading, spacing: 6) {
                                     HStack {
                                         Text(client.name)
                                             .font(.headline)
                                             .bold()
-                                            .foregroundColor(.primary)
+                                            .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
                                         Spacer()
                                         if client.isActive {
                                             Text("🟢 Active")
                                                 .font(.caption)
+                                                .bold()
                                                 .foregroundColor(.green)
                                         } else {
                                             Text("🔴 Inactive")
                                                 .font(.caption)
+                                                .bold()
                                                 .foregroundColor(.red)
                                         }
                                     }
                                     Text("📞 \(client.contactNumber)")
                                         .font(.subheadline)
-                                        .foregroundColor(.gray)
+                                        .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
                                     Text("📝 Needs: \(client.supportNeeds)")
                                         .font(.footnote)
+                                        .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
                                 }
                                 .padding()
-                                .background(Color.white)
-                                .cornerRadius(12)
-                                .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
+                                .background(Color(red: 0/255, green: 73/255, blue: 83/255))
+                                .cornerRadius(14)
+                                .shadow(color: Color.black.opacity(0.3), radius: 15, x: 10, y: 10)
+                                .shadow(color: Color.white.opacity(0.6), radius: 8, x: -5, y: -5)
+                                .padding(.horizontal)
                                 .onTapGesture {
                                     selectedClient = client
                                 }
                             }
-                            .onDelete { indexSet in
-                                indexSet.forEach { i in
-                                    let client = filteredClients[i]
-                                    viewModel.deleteClient(client)
-                                }
-                            }
                         }
-                        .listStyle(InsetGroupedListStyle())
-                        .searchable(text: $searchText)
                     }
+                    .padding(.bottom, 16)
                 }
-                .padding(.top, 5)
-                .navigationTitle("👥 Clients")
+
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         NavigationLink(destination: AddClientView(viewModel: viewModel)) {
-                            Label("Add", systemImage: "plus.circle.fill")
-                                .foregroundColor(.white)
+                            Image(systemName: "plus.circle.fill")
+                                .foregroundColor(Color(hex: "#f8ecc7"))
                         }
                     }
                 }
-                .sheet(item: $selectedClient) { (client: Client) in
+
+                .sheet(item: $selectedClient) { client in
                     EditClientView(
                         client: client,
                         viewModel: viewModel,
@@ -96,6 +114,20 @@ struct ClientsView: View {
                     )
                 }
             }
+        }
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func placeholder<Content: View>(
+        when shouldShow: Bool,
+        alignment: Alignment = .leading,
+        @ViewBuilder placeholder: () -> Content
+    ) -> some View {
+        ZStack(alignment: alignment) {
+            placeholder().opacity(shouldShow ? 1 : 0)
+            self
         }
     }
 }
