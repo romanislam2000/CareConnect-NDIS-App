@@ -1,5 +1,3 @@
-
-
 import SwiftUI
 import Firebase
 
@@ -15,13 +13,8 @@ struct CareConnect_NDISApp: App {
     var body: some Scene {
         WindowGroup {
             if authVM.isLoggedIn {
-                if authVM.userRole == "admin" {
-                    AdminView()
-                        .environmentObject(authVM)
-                } else {
-                    MainTabView()
-                        .environmentObject(authVM)
-                }
+                MainTabView()
+                    .environmentObject(authVM)
             } else {
                 LoginView()
                     .environmentObject(authVM)

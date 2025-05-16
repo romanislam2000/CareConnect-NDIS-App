@@ -22,6 +22,7 @@ class TaskLogViewModel: ObservableObject {
             }
         }
     }
+
     func updateLog(_ log: TaskLog) {
         let data: [String: Any] = [
             "clientName": log.clientName,
@@ -31,5 +32,4 @@ class TaskLogViewModel: ObservableObject {
         ]
         db.collection("taskLogs").document(log.id).setData(data, merge: true)
     }
-
 }

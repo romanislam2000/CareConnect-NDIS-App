@@ -1,4 +1,5 @@
 import SwiftUI
+import FirebaseAuth
 
 struct ShiftsView: View {
     @StateObject private var shiftViewModel = ShiftViewModel()
@@ -68,11 +69,43 @@ struct ShiftsView: View {
                                         .font(.footnote)
                                         .foregroundColor(.gray)
 
-                                    Text("🕒 \(shift.startTime) - \(shift.endTime)")
+                                    Text("🕒 \(formattedTime(shift.startTime)) - \(formattedTime(shift.endTime))")
                                         .font(.footnote)
                                         .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
                                         .lineLimit(1)
                                         .truncationMode(.tail)
+
+                                    if !shift.notes.isEmpty {
+                                        Text("📝 \(shift.notes)")
+                                            .font(.footnote)
+                                            .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                                            .padding(.top, 4)
+                                    }
+
+                                    HStack {
+                                        Spacer()
+                                        if isAdmin() {
+                                            Text(shift.isAttended ? "✅ Attended" : "🟧 Pending")
+                                                .font(.caption)
+                                                .foregroundColor(.white)
+                                                .padding(6)
+                                                .background(shift.isAttended ? Color.green : Color.orange)
+                                                .cornerRadius(8)
+                                        } else {
+                                            Button(action: {
+                                                var updated = shift
+                                                updated.isAttended.toggle()
+                                                shiftViewModel.updateShift(updated)
+                                            }) {
+                                                Text(shift.isAttended ? "✅ Attended" : "🟧 Mark as Attended")
+                                                    .font(.caption)
+                                                    .foregroundColor(.white)
+                                                    .padding(6)
+                                                    .background(shift.isAttended ? Color.green : Color.orange)
+                                                    .cornerRadius(8)
+                                            }
+                                        }
+                                    }
                                 }
                                 .padding()
                                 .background(Color(red: 0/255, green: 50/255, blue: 98/255))
@@ -80,9 +113,12 @@ struct ShiftsView: View {
                                 .shadow(color: Color.black.opacity(0.3), radius: 15, x: 10, y: 10)
                                 .shadow(color: Color.white.opacity(0.4), radius: 8, x: -5, y: -5)
                                 .padding(.horizontal)
+                                .frame(maxWidth: .infinity)
                                 .onTapGesture {
-                                    selectedShift = shift
-                                    showEditShiftForm = true
+                                    if isAdmin() {
+                                        selectedShift = shift
+                                        showEditShiftForm = true
+                                    }
                                 }
                             }
                         }
@@ -91,12 +127,14 @@ struct ShiftsView: View {
                 }
 
                 .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button {
-                            showNewShiftForm = true
-                        } label: {
-                            Image(systemName: "plus.circle.fill")
-                                .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                    if isAdmin() {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button {
+                                showNewShiftForm = true
+                            } label: {
+                                Image(systemName: "plus.circle.fill")
+                                    .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                            }
                         }
                     }
                 }
@@ -131,5 +169,16 @@ struct ShiftsView: View {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         return formatter.string(from: date)
+    }
+
+    private func formattedTime(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+        return formatter.string(from: date)
+    }
+
+    private func isAdmin() -> Bool {
+        let adminEmails = ["admin@careconnect.com", "admin1@careconnect.com"]
+        return adminEmails.contains(Auth.auth().currentUser?.email ?? "")
     }
 }

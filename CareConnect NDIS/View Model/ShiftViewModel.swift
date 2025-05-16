@@ -22,17 +22,17 @@ class ShiftViewModel: ObservableObject {
             }
         }
     }
+
     func updateShift(_ shift: Shift) {
         let data: [String: Any] = [
             "clientName": shift.clientName,
             "supportWorkerName": shift.supportWorkerName,
             "date": Timestamp(date: shift.date),
-            "startTime": shift.startTime,
-            "endTime": shift.endTime,
+            "startTime": Timestamp(date: shift.startTime),
+            "endTime": Timestamp(date: shift.endTime),
             "notes": shift.notes,
             "isAttended": shift.isAttended
         ]
         db.collection("shifts").document(shift.id).setData(data, merge: true)
     }
-
 }

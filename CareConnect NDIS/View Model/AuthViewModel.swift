@@ -1,14 +1,15 @@
-// AuthViewModel.swift
 import Foundation
 import FirebaseAuth
-import FirebaseFirestore
 
 class AuthViewModel: ObservableObject {
     @Published var isLoggedIn = false
     @Published var userRole: String = ""
     @Published var errorMessage: String?
 
-    private var db = Firestore.firestore()
+    private let adminEmails: [String] = [
+        "admin@careconnect.com",
+        "admin1@careconnect.com"
+    ]
 
     func signUp(email: String, password: String) {
         Auth.auth().createUser(withEmail: email, password: password) { [weak self] result, error in
@@ -16,19 +17,9 @@ class AuthViewModel: ObservableObject {
                 self?.errorMessage = error.localizedDescription
                 return
             }
-            guard let uid = result?.user.uid else { return }
 
-            // Default role assignment for new users (adjust as needed)
-            self?.db.collection("users").document(uid).setData([
-                "role": "admin"
-            ]) { err in
-                if let err = err {
-                    print("Failed to write user role: \(err.localizedDescription)")
-                }
-            }
-
+            self?.checkRole(for: email)
             self?.isLoggedIn = true
-            self?.fetchUserRole(uid: uid)
         }
     }
 
@@ -39,9 +30,8 @@ class AuthViewModel: ObservableObject {
                 return
             }
 
-            guard let uid = result?.user.uid else { return }
+            self?.checkRole(for: email)
             self?.isLoggedIn = true
-            self?.fetchUserRole(uid: uid)
         }
     }
 
@@ -55,13 +45,11 @@ class AuthViewModel: ObservableObject {
         }
     }
 
-    func fetchUserRole(uid: String) {
-        db.collection("users").document(uid).getDocument { [weak self] snapshot, error in
-            if let data = snapshot?.data(), let role = data["role"] as? String {
-                self?.userRole = role
-            } else {
-                print("Failed to fetch role or role missing")
-            }
+    private func checkRole(for email: String) {
+        if adminEmails.contains(email.lowercased()) {
+            self.userRole = "admin"
+        } else {
+            self.userRole = "user"
         }
     }
 }

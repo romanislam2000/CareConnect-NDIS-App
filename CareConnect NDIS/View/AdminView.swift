@@ -21,13 +21,29 @@ struct AdminView: View {
 
                         ForEach(viewModel.documents) { doc in
                             if let url = URL(string: doc.link) {
-                                Link(doc.name, destination: url)
-                                    .padding(.vertical, 4)
-                                    .lineLimit(1)
-                                    .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
-                                    .underline()
+                                Link(destination: url) {
+                                    HStack(spacing: 8) {
+                                        Image(systemName: "paperclip")
+                                            .foregroundColor(.white)
+                                        Text(doc.name)
+                                            .fontWeight(.semibold)
+                                            .lineLimit(1)
+                                            .truncationMode(.tail)
+                                            .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                                    }
+                                    .padding(.vertical, 10)
+                                    .padding(.horizontal)
+                                    .background(Color.white.opacity(0.1))
+                                    .cornerRadius(12)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .stroke(Color.white.opacity(0.3), lineWidth: 1)
+                                    )
+                                }
+                                .padding(.bottom, 6)
                             }
                         }
+
 
                         Divider().background(Color.white.opacity(0.3)).padding(.vertical)
 
@@ -75,7 +91,7 @@ struct AdminView: View {
                     .padding()
                 }
             }
-            .navigationTitle("Admin Dashboard")
+            .navigationTitle("Document Viewcard")
             .onAppear {
                 viewModel.fetchDocuments()
             }
