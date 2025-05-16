@@ -14,50 +14,40 @@ struct AddIncidentReportView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                LinearGradient(gradient: Gradient(colors: [Color.indigo.opacity(0.7), Color.blue.opacity(0.4)]),
-                               startPoint: .topLeading,
-                               endPoint: .bottomTrailing)
+                Color(red: 22/255, green: 22/255, blue: 107/255)
                     .ignoresSafeArea()
 
-                VStack(spacing: 16) {
-                    GroupBox {
-                        TextField("Client Name", text: $clientName)
-                            .textFieldStyle(.roundedBorder)
-                    }
-                    .background(Color.white.opacity(0.9))
-                    .cornerRadius(10)
+                VStack(spacing: 18) {
+                    Text("📝 New Incident Report")
+                        .font(.largeTitle.bold())
+                        .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal)
 
-                    GroupBox {
-                        DatePicker("Date", selection: $date, displayedComponents: .date)
-                            .labelsHidden()
-                            .datePickerStyle(.compact)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                    GroupBox(label: Text("Client").font(.caption)) {
+                        Menu {
+                            ForEach(clientViewModel.clients) { client in
+                                Button(action: {
+                                    selectedClient = client
+                                }) {
+                                    Text(client.name)
+                                }
+                            }
+                        } label: {
+                            Text(selectedClient?.name ?? "Select Client")
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(12)
+                                .background(Color(red: 248/255, green: 236/255, blue: 199/255))
+                                .cornerRadius(8)
+                        }
                     }
-                    .background(Color.white.opacity(0.9))
-                    .cornerRadius(10)
-
-                    GroupBox {
-                        TextField("Incident Type", text: $incidentType)
-                            .textFieldStyle(.roundedBorder)
-                    }
-                    .background(Color.white.opacity(0.9))
-                    .cornerRadius(10)
-
-                    GroupBox {
-                        TextEditor(text: $description)
-                            .frame(height: 80)
-                            .cornerRadius(8)
-                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
-                    }
-                    .background(Color.white.opacity(0.9))
-                    .cornerRadius(10)
-
-                    GroupBox {
-                        TextField("Reported By", text: $reportedBy)
-                            .textFieldStyle(.roundedBorder)
-                    }
-                    .background(Color.white.opacity(0.9))
-                    .cornerRadius(10)
+                    .padding()
+                    .background(Color(red: 22/255, green: 22/255, blue: 107/255))
+                    .cornerRadius(12)
+                    .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                    .shadow(color: Color.black.opacity(0.3), radius: 8, x: 4, y: 4)
+                    .shadow(color: Color.white.opacity(0.3), radius: 5, x: -2, y: -2)
+                    .padding(.horizontal)
 
                     Spacer()
 
@@ -68,13 +58,11 @@ struct AddIncidentReportView: View {
                             Text("Cancel")
                                 .frame(maxWidth: .infinity)
                                 .padding()
-                                .background(Color.white.opacity(0.15))
-                                .foregroundColor(.white)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .stroke(Color.white.opacity(0.3), lineWidth: 1)
-                                )
+                                .background(Color(red: 22/255, green: 22/255, blue: 107/255))
+                                .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
                                 .cornerRadius(10)
+                                .shadow(color: Color.black.opacity(0.3), radius: 8, x: 4, y: 4)
+                                .shadow(color: Color.white.opacity(0.3), radius: 5, x: -2, y: -2)
                         }
 
                         Button(action: {
@@ -91,17 +79,16 @@ struct AddIncidentReportView: View {
                             Text("Save")
                                 .frame(maxWidth: .infinity)
                                 .padding()
-                                .background(Color.white.opacity(0.15))
-                                .foregroundColor(.white)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .stroke(Color.white.opacity(0.3), lineWidth: 1)
-                                )
+                                .background(Color(red: 22/255, green: 22/255, blue: 107/255))
+                                .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
                                 .cornerRadius(10)
+                                .shadow(color: Color.black.opacity(0.3), radius: 8, x: 4, y: 4)
+                                .shadow(color: Color.white.opacity(0.3), radius: 5, x: -2, y: -2)
                         }
                     }
+                    .padding(.horizontal)
                 }
-                .padding()
+                .padding(.bottom)
             }
             .navigationTitle("New Incident")
             .toolbar {
@@ -109,7 +96,7 @@ struct AddIncidentReportView: View {
                     Button("Cancel") {
                         dismiss()
                     }
-                    .foregroundColor(.white)
+                    .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
                 }
             }
         }
