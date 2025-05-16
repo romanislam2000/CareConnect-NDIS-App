@@ -8,12 +8,16 @@ struct EditShiftView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                LinearGradient(gradient: Gradient(colors: [Color.indigo.opacity(0.7), Color.blue.opacity(0.4)]),
-                               startPoint: .topLeading,
-                               endPoint: .bottomTrailing)
-                    .ignoresSafeArea()
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.indigo.opacity(0.7), Color.blue.opacity(0.4)]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .ignoresSafeArea()
 
                 VStack(spacing: 20) {
+                    Spacer().frame(height: 10) // adds some breathing room below nav bar
+
                     GroupBox(label: Label("Client Name", systemImage: "person")) {
                         TextField("Client Name", text: $shift.clientName)
                             .textFieldStyle(.roundedBorder)
@@ -86,8 +90,9 @@ struct EditShiftView: View {
                     }
                 }
                 .padding()
-                .navigationTitle("Edit Shift")
             }
+            .navigationTitle("Edit Shift") // moves title to nav bar
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
