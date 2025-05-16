@@ -1,9 +1,15 @@
 import SwiftUI
+import FirebaseAuth
 
 struct ClientsView: View {
     @ObservedObject var viewModel = ClientViewModel()
     @State private var searchText = ""
     @State private var selectedClient: Client? = nil
+
+    private var isAdmin: Bool {
+        let adminEmails = ["admin@careconnect.com", "admin1@careconnect.com", "md.roman.islam3417@gmail.com"]
+        return adminEmails.contains(Auth.auth().currentUser?.email ?? "")
+    }
 
     var filteredClients: [Client] {
         if searchText.isEmpty {
@@ -34,10 +40,10 @@ struct ClientsView: View {
                             Image(systemName: "magnifyingglass")
                                 .foregroundColor(Color(hex: "#f8ecc7"))
                             TextField("Search", text: $searchText)
-                                .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                                .foregroundColor(Color(hex: "#f8ecc7"))
                                 .placeholder(when: searchText.isEmpty) {
                                     Text("Search")
-                                        .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255).opacity(0.6))
+                                        .foregroundColor(Color(hex: "#f8ecc7").opacity(0.6))
                                 }
                         }
                         .padding()
@@ -48,7 +54,7 @@ struct ClientsView: View {
                         if viewModel.clients.isEmpty {
                             Spacer()
                             ProgressView("Loading clients...")
-                                .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                                .foregroundColor(Color(hex: "#f8ecc7"))
                                 .padding(.top, 50)
                             Spacer()
                         } else {
@@ -58,7 +64,7 @@ struct ClientsView: View {
                                         Text(client.name)
                                             .font(.headline)
                                             .bold()
-                                            .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                                            .foregroundColor(Color(hex: "#f8ecc7"))
                                         Spacer()
                                         if client.isActive {
                                             Text("🟢 Active")
@@ -74,10 +80,10 @@ struct ClientsView: View {
                                     }
                                     Text("📞 \(client.contactNumber)")
                                         .font(.subheadline)
-                                        .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                                        .foregroundColor(Color(hex: "#f8ecc7"))
                                     Text("📝 Needs: \(client.supportNeeds)")
                                         .font(.footnote)
-                                        .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                                        .foregroundColor(Color(hex: "#f8ecc7"))
                                 }
                                 .padding()
                                 .background(Color(red: 0/255, green: 73/255, blue: 83/255))
@@ -86,7 +92,9 @@ struct ClientsView: View {
                                 .shadow(color: Color.white.opacity(0.6), radius: 8, x: -5, y: -5)
                                 .padding(.horizontal)
                                 .onTapGesture {
-                                    selectedClient = client
+                                    if isAdmin {
+                                        selectedClient = client
+                                    }
                                 }
                             }
                         }
@@ -94,24 +102,30 @@ struct ClientsView: View {
                     .padding(.bottom, 16)
                 }
 
+                // Admin-only Add button
                 .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        NavigationLink(destination: AddClientView(viewModel: viewModel)) {
-                            Image(systemName: "plus.circle.fill")
-                                .foregroundColor(Color(hex: "#f8ecc7"))
+                    if isAdmin {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            NavigationLink(destination: AddClientView(viewModel: viewModel)) {
+                                Image(systemName: "plus.circle.fill")
+                                    .foregroundColor(Color(hex: "#f8ecc7"))
+                            }
                         }
                     }
                 }
 
+                // Admin-only Edit sheet
                 .sheet(item: $selectedClient) { client in
-                    EditClientView(
-                        client: client,
-                        viewModel: viewModel,
-                        onSave: {
-                            viewModel.fetchClients()
-                            selectedClient = nil
-                        }
-                    )
+                    if isAdmin {
+                        EditClientView(
+                            client: client,
+                            viewModel: viewModel,
+                            onSave: {
+                                viewModel.fetchClients()
+                                selectedClient = nil
+                            }
+                        )
+                    }
                 }
             }
         }

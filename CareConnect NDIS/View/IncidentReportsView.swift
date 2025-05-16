@@ -4,7 +4,7 @@ struct IncidentReportsView: View {
     @StateObject private var viewModel = IncidentReportViewModel()
     @State private var showNewReport = false
     @State private var showEditReport = false
-    @State private var selectedReport: IncidentReports?
+    @State private var selectedReport: IncidentReports? = nil
     @State private var searchText = ""
 
     var filteredReports: [IncidentReports] {
@@ -32,6 +32,7 @@ struct IncidentReportsView: View {
                             .padding(.top)
                             .padding(.horizontal)
 
+                        // Search Bar
                         HStack {
                             Image(systemName: "magnifyingglass")
                                 .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
@@ -50,26 +51,23 @@ struct IncidentReportsView: View {
                                 .padding(.top, 60)
                         } else {
                             ForEach(filteredReports) { report in
-                                HStack {
-                                    VStack(alignment: .leading, spacing: 6) {
-                                        Text("🚨 \(report.incidentType)")
-                                            .font(.headline)
-                                            .foregroundColor(.red)
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text("🚨 \(report.incidentType)")
+                                        .font(.headline)
+                                        .foregroundColor(.red)
 
-                                        Text("👤 Client: \(report.clientName)")
-                                            .font(.subheadline)
-                                            .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                                    Text("👤 Client: \(report.clientName)")
+                                        .font(.subheadline)
+                                        .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
 
-                                        Text("📅 \(formattedDate(report.date)) by \(report.reportedBy)")
-                                            .font(.footnote)
-                                            .foregroundColor(.gray)
+                                    Text("📅 \(formattedDate(report.date)) by \(report.reportedBy)")
+                                        .font(.footnote)
+                                        .foregroundColor(.gray)
 
-                                        Text("📝 \(report.description)")
-                                            .font(.footnote)
-                                            .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
-                                            .padding(.top, 4)
-                                    }
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    Text("📝 \(report.description)")
+                                        .font(.footnote)
+                                        .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                                        .padding(.top, 4)
                                 }
                                 .padding()
                                 .background(Color(red: 0/255, green: 49/255, blue: 83/255))
@@ -77,17 +75,18 @@ struct IncidentReportsView: View {
                                 .shadow(color: Color.black.opacity(0.3), radius: 15, x: 8, y: 8)
                                 .shadow(color: Color.white.opacity(0.3), radius: 6, x: -6, y: -6)
                                 .padding(.horizontal)
+                                .contentShape(Rectangle())
                                 .onTapGesture {
                                     selectedReport = report
                                     showEditReport = true
                                 }
                             }
-
                         }
                     }
                     .padding(.bottom, 16)
                 }
 
+                // Toolbar Button to Add Report
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {
@@ -100,17 +99,24 @@ struct IncidentReportsView: View {
                     }
                 }
 
+                // New Report Sheet
                 .sheet(isPresented: $showNewReport) {
                     AddIncidentReportView(viewModel: viewModel)
                 }
 
-                .sheet(isPresented: $showEditReport) {
+                // Edit Report Sheet (with ID binding fix)
+                .sheet(isPresented: $showEditReport, onDismiss: {
+                    selectedReport = nil
+                }) {
                     if let report = selectedReport {
                         EditIncidentReportView(report: report) { updated in
                             viewModel.updateReport(updated)
+                            showEditReport = false
+                            selectedReport = nil
                         }
                     }
                 }
+                .id(selectedReport?.id) // 🔥 Forces sheet to reload for correct record
 
                 .onAppear {
                     viewModel.fetchReports()

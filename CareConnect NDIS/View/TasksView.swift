@@ -5,7 +5,7 @@ struct TasksView: View {
     @StateObject private var viewModel = TaskLogViewModel()
     @State private var showNewTaskForm = false
     @State private var showEditTaskForm = false
-    @State private var selectedLog: TaskLog?
+    @State private var selectedLog: TaskLog? = nil
     @State private var searchText = ""
 
     var filteredLogs: [TaskLog] {
@@ -19,15 +19,14 @@ struct TasksView: View {
     }
 
     var isAdmin: Bool {
-        let adminEmails = ["admin@careconnect.com", "admin1@careconnect.com"]
+        let adminEmails = ["admin@careconnect.com", "admin1@careconnect.com","md.roman.islam3417@gmail.com"]
         return adminEmails.contains(Auth.auth().currentUser?.email ?? "")
     }
 
     var body: some View {
         NavigationView {
             ZStack {
-                Color(red: 31/255, green: 48/255, blue: 94/255)
-                    .ignoresSafeArea()
+                Color(red: 31/255, green: 48/255, blue: 94/255).ignoresSafeArea()
 
                 ScrollView {
                     VStack(spacing: 12) {
@@ -38,6 +37,7 @@ struct TasksView: View {
                     .padding(.bottom, 16)
                 }
 
+                // Admin-only Add Task Button
                 .toolbar {
                     if isAdmin {
                         ToolbarItem(placement: .navigationBarTrailing) {
@@ -55,14 +55,20 @@ struct TasksView: View {
                     AddTaskLogView(viewModel: viewModel)
                 }
 
-                .sheet(isPresented: $showEditTaskForm) {
+                // Edit Sheet with ID fix
+                .sheet(isPresented: $showEditTaskForm, onDismiss: {
+                    selectedLog = nil
+                }) {
                     if let log = selectedLog {
                         EditTaskLogView(log: log) { updatedLog in
                             viewModel.updateLog(updatedLog)
                             viewModel.fetchLogs()
+                            showEditTaskForm = false
+                            selectedLog = nil
                         }
                     }
                 }
+                .id(selectedLog?.id)
 
                 .onAppear {
                     viewModel.fetchLogs()
@@ -71,7 +77,7 @@ struct TasksView: View {
         }
     }
 
-    // MARK: - Header
+    // MARK: - Header View
     @ViewBuilder
     private func headerView() -> some View {
         Text("📋 Task Logs")
@@ -166,6 +172,7 @@ struct TasksView: View {
                 .shadow(color: Color.black.opacity(0.3), radius: 15, x: 10, y: 10)
                 .shadow(color: Color.white.opacity(0.4), radius: 8, x: -5, y: -5)
                 .padding(.horizontal)
+                .contentShape(Rectangle())
                 .onTapGesture {
                     if isAdmin {
                         selectedLog = log

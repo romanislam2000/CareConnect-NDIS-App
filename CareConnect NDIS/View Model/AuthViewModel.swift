@@ -8,7 +8,8 @@ class AuthViewModel: ObservableObject {
 
     private let adminEmails: [String] = [
         "admin@careconnect.com",
-        "admin1@careconnect.com"
+        "admin1@careconnect.com",
+        "md.roman.islam3417@gmail.com"
     ]
 
     func signUp(email: String, password: String) {
