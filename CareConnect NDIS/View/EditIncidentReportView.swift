@@ -8,47 +8,77 @@ struct EditIncidentReportView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                LinearGradient(gradient: Gradient(colors: [Color.indigo.opacity(0.7), Color.blue.opacity(0.4)]),
-                               startPoint: .topLeading,
-                               endPoint: .bottomTrailing)
+                Color(red: 0/255, green: 35/255, blue: 102/255) // #002366
                     .ignoresSafeArea()
 
                 VStack(spacing: 20) {
+                    Text("🛠 Edit Incident Report")
+                        .font(.largeTitle.bold())
+                        .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.top)
+                        .padding(.horizontal)
+
                     GroupBox(label: Label("Client Name", systemImage: "person")) {
                         TextField("Client Name", text: $report.clientName)
                             .textFieldStyle(.roundedBorder)
                     }
-                    .background(Color.white.opacity(0.9))
-                    .cornerRadius(10)
+                    .padding()
+                    .background(Color(red: 0/255, green: 35/255, blue: 102/255))
+                    .cornerRadius(12)
+                    .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                    .shadow(color: Color.black.opacity(0.3), radius: 8, x: 4, y: 4)
+                    .shadow(color: Color.white.opacity(0.3), radius: 5, x: -2, y: -2)
+                    .padding(.horizontal)
 
                     GroupBox(label: Label("Date", systemImage: "calendar")) {
                         DatePicker("", selection: $report.date, displayedComponents: .date)
                             .labelsHidden()
                     }
-                    .background(Color.white.opacity(0.9))
-                    .cornerRadius(10)
+                    .padding()
+                    .background(Color(red: 0/255, green: 35/255, blue: 102/255))
+                    .cornerRadius(12)
+                    .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                    .shadow(color: Color.black.opacity(0.3), radius: 8, x: 4, y: 4)
+                    .shadow(color: Color.white.opacity(0.3), radius: 5, x: -2, y: -2)
+                    .padding(.horizontal)
 
                     GroupBox(label: Label("Incident Type", systemImage: "exclamationmark.triangle")) {
                         TextField("Incident Type", text: $report.incidentType)
                             .textFieldStyle(.roundedBorder)
                     }
-                    .background(Color.white.opacity(0.9))
-                    .cornerRadius(10)
+                    .padding()
+                    .background(Color(red: 0/255, green: 35/255, blue: 102/255))
+                    .cornerRadius(12)
+                    .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                    .shadow(color: Color.black.opacity(0.3), radius: 8, x: 4, y: 4)
+                    .shadow(color: Color.white.opacity(0.3), radius: 5, x: -2, y: -2)
+                    .padding(.horizontal)
 
                     GroupBox(label: Label("Description", systemImage: "text.bubble")) {
                         TextEditor(text: $report.description)
                             .frame(height: 100)
                             .cornerRadius(8)
                     }
-                    .background(Color.white.opacity(0.9))
-                    .cornerRadius(10)
+                    .padding()
+                    .background(Color(red: 0/255, green: 35/255, blue: 102/255))
+                    .cornerRadius(12)
+                    .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                    .shadow(color: Color.black.opacity(0.3), radius: 8, x: 4, y: 4)
+                    .shadow(color: Color.white.opacity(0.3), radius: 5, x: -2, y: -2)
+                    .padding(.horizontal)
 
                     GroupBox(label: Label("Reported By", systemImage: "person.crop.circle")) {
                         TextField("Reported By", text: $report.reportedBy)
                             .textFieldStyle(.roundedBorder)
                     }
-                    .background(Color.white.opacity(0.9))
-                    .cornerRadius(10)
+                    .padding()
+                    .background(Color(red: 0/255, green: 35/255, blue: 102/255))
+                    .cornerRadius(12)
+                    .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                    .shadow(color: Color.black.opacity(0.3), radius: 8, x: 4, y: 4)
+                    .shadow(color: Color.white.opacity(0.3), radius: 5, x: -2, y: -2)
+                    .padding(.horizontal)
 
                     Spacer()
 
@@ -58,9 +88,11 @@ struct EditIncidentReportView: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.white.opacity(0.15))
-                        .foregroundColor(.white)
+                        .background(Color(red: 0/255, green: 35/255, blue: 102/255))
+                        .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
                         .cornerRadius(10)
+                        .shadow(color: Color.black.opacity(0.3), radius: 8, x: 4, y: 4)
+                        .shadow(color: Color.white.opacity(0.3), radius: 5, x: -2, y: -2)
 
                         Button("Save") {
                             onSave(report)
@@ -68,14 +100,18 @@ struct EditIncidentReportView: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.white.opacity(0.15))
-                        .foregroundColor(.white)
+                        .background(Color(red: 0/255, green: 35/255, blue: 102/255))
+                        .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
                         .cornerRadius(10)
+                        .shadow(color: Color.black.opacity(0.3), radius: 8, x: 4, y: 4)
+                        .shadow(color: Color.white.opacity(0.3), radius: 5, x: -2, y: -2)
                     }
+                    .padding(.horizontal)
                 }
-                .padding()
-                .navigationTitle("Edit Incident")
+                .padding(.bottom)
             }
+            .navigationTitle("")
+            .navigationBarHidden(true)
         }
     }
 }
