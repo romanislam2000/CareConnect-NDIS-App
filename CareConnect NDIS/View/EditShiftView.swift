@@ -8,59 +8,93 @@ struct EditShiftView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                LinearGradient(gradient: Gradient(colors: [Color.indigo.opacity(0.7), Color.blue.opacity(0.4)]),
-                               startPoint: .topLeading,
-                               endPoint: .bottomTrailing)
+                Color(red: 18/255, green: 10/255, blue: 143/255) // #120A8F
                     .ignoresSafeArea()
 
                 VStack(spacing: 20) {
+                    Text("🕒 Edit Shift")
+                        .font(.largeTitle.bold())
+                        .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.top)
+                        .padding(.horizontal)
+
                     GroupBox(label: Label("Client Name", systemImage: "person")) {
                         TextField("Client Name", text: $shift.clientName)
                             .textFieldStyle(.roundedBorder)
                     }
-                    .background(Color.white.opacity(0.9))
-                    .cornerRadius(10)
+                    .padding()
+                    .background(Color(red: 18/255, green: 10/255, blue: 143/255))
+                    .cornerRadius(12)
+                    .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                    .shadow(color: Color.black.opacity(0.3), radius: 8, x: 4, y: 4)
+                    .shadow(color: Color.white.opacity(0.3), radius: 5, x: -2, y: -2)
+                    .padding(.horizontal)
 
                     GroupBox(label: Label("Support Worker", systemImage: "person.2")) {
                         TextField("Support Worker Name", text: $shift.supportWorkerName)
                             .textFieldStyle(.roundedBorder)
                     }
-                    .background(Color.white.opacity(0.9))
-                    .cornerRadius(10)
+                    .padding()
+                    .background(Color(red: 18/255, green: 10/255, blue: 143/255))
+                    .cornerRadius(12)
+                    .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                    .shadow(color: Color.black.opacity(0.3), radius: 8, x: 4, y: 4)
+                    .shadow(color: Color.white.opacity(0.3), radius: 5, x: -2, y: -2)
+                    .padding(.horizontal)
 
                     GroupBox(label: Label("Date", systemImage: "calendar")) {
                         DatePicker("", selection: $shift.date, displayedComponents: .date)
                             .labelsHidden()
                     }
-                    .background(Color.white.opacity(0.9))
-                    .cornerRadius(10)
+                    .padding()
+                    .background(Color(red: 18/255, green: 10/255, blue: 143/255))
+                    .cornerRadius(12)
+                    .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                    .shadow(color: Color.black.opacity(0.3), radius: 8, x: 4, y: 4)
+                    .shadow(color: Color.white.opacity(0.3), radius: 5, x: -2, y: -2)
+                    .padding(.horizontal)
 
                     HStack(spacing: 12) {
                         GroupBox(label: Text("Start Time")) {
                             DatePicker("", selection: $shift.startTime, displayedComponents: .hourAndMinute)
                                 .labelsHidden()
                         }
-                        .background(Color.white.opacity(0.9))
-                        .cornerRadius(10)
+                        .padding()
+                        .background(Color(red: 18/255, green: 10/255, blue: 143/255))
+                        .cornerRadius(12)
+                        .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                        .shadow(color: Color.black.opacity(0.3), radius: 8, x: 4, y: 4)
+                        .shadow(color: Color.white.opacity(0.3), radius: 5, x: -2, y: -2)
 
                         GroupBox(label: Text("End Time")) {
                             DatePicker("", selection: $shift.endTime, displayedComponents: .hourAndMinute)
                                 .labelsHidden()
                         }
-                        .background(Color.white.opacity(0.9))
-                        .cornerRadius(10)
+                        .padding()
+                        .background(Color(red: 18/255, green: 10/255, blue: 143/255))
+                        .cornerRadius(12)
+                        .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                        .shadow(color: Color.black.opacity(0.3), radius: 8, x: 4, y: 4)
+                        .shadow(color: Color.white.opacity(0.3), radius: 5, x: -2, y: -2)
                     }
+                    .padding(.horizontal)
 
                     GroupBox(label: Label("Notes", systemImage: "note.text")) {
                         TextField("Notes", text: $shift.notes)
                             .textFieldStyle(.roundedBorder)
                     }
-                    .background(Color.white.opacity(0.9))
-                    .cornerRadius(10)
+                    .padding()
+                    .background(Color(red: 18/255, green: 10/255, blue: 143/255))
+                    .cornerRadius(12)
+                    .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
+                    .shadow(color: Color.black.opacity(0.3), radius: 8, x: 4, y: 4)
+                    .shadow(color: Color.white.opacity(0.3), radius: 5, x: -2, y: -2)
+                    .padding(.horizontal)
 
                     Toggle("Attended", isOn: $shift.isAttended)
                         .padding(.horizontal)
-                        .foregroundColor(.white)
+                        .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
 
                     Spacer()
 
@@ -70,9 +104,11 @@ struct EditShiftView: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.white.opacity(0.15))
-                        .foregroundColor(.white)
+                        .background(Color(red: 18/255, green: 10/255, blue: 143/255))
+                        .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
                         .cornerRadius(10)
+                        .shadow(color: Color.black.opacity(0.3), radius: 8, x: 4, y: 4)
+                        .shadow(color: Color.white.opacity(0.3), radius: 5, x: -2, y: -2)
 
                         Button("Save") {
                             onSave(shift)
@@ -80,14 +116,18 @@ struct EditShiftView: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.white.opacity(0.15))
-                        .foregroundColor(.white)
+                        .background(Color(red: 18/255, green: 10/255, blue: 143/255))
+                        .foregroundColor(Color(red: 248/255, green: 236/255, blue: 199/255))
                         .cornerRadius(10)
+                        .shadow(color: Color.black.opacity(0.3), radius: 8, x: 4, y: 4)
+                        .shadow(color: Color.white.opacity(0.3), radius: 5, x: -2, y: -2)
                     }
+                    .padding(.horizontal)
                 }
-                .padding()
-                .navigationTitle("Edit Shift")
+                .padding(.bottom)
             }
+            .navigationTitle("")
+            .navigationBarHidden(true)
         }
     }
 }
