@@ -6,12 +6,31 @@
 //
 
 import SwiftUI
+import Firebase
 
 @main
 struct CareConnect_NDISApp: App {
+    @StateObject var authVM = AuthViewModel()
+
+    init() {
+        FirebaseApp.configure()
+        UIView.appearance().tintColor = UIColor.systemIndigo
+    }
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if authVM.isLoggedIn {
+                if authVM.userRole == "admin" {
+                    AdminView()
+                        .environmentObject(authVM)
+                } else {
+                    MainTabView()
+                        .environmentObject(authVM)
+                }
+            } else {
+                LoginView()
+                    .environmentObject(authVM)
+            }
         }
     }
 }
